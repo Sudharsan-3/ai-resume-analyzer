@@ -2,9 +2,8 @@ from pypdf import PdfReader
 
 
 def extract_text(file):
-    """Extract text from an uploaded PDF file."""
+    """Extract text from an uploaded PDF."""
     reader = PdfReader(file)
-
     pages = []
 
     for page in reader.pages:

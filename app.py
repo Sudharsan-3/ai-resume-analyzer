@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 st.title("🤖 AI Resume Analyzer")
-st.write("Upload your resume to extract and analyze its content.")
+st.write("Upload your resume to extract its content.")
 
 resume = st.file_uploader(
     "Upload your resume",
