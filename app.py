@@ -7,6 +7,7 @@ from ai.gemini import analyze_resume
 from components.api_settings import get_api_key
 from components.job_input import get_job_description
 from utils.pdf_reader import extract_text
+from components.usage import record_analysis, show_usage
 
 
 st.set_page_config(
@@ -19,6 +20,7 @@ st.write("Compare your resume with a job description using AI.")
 
 
 api_key = get_api_key()
+show_usage()
 
 resume = st.file_uploader(
     "Upload your resume",
@@ -48,6 +50,7 @@ if st.button("🚀 Analyze Resume"):
                         resume_text,
                         job_description,
                     )
+                    record_analysis()
 
                     st.subheader("📊 Analysis")
                     st.markdown(result)

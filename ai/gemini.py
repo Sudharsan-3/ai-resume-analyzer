@@ -1,12 +1,11 @@
 from google import genai
-from google import genai
-from google.genai import errors
+from google.genai import errors, types
 from google.genai._gaos.lib.compat_errors import AuthenticationError
 
 from errors.ai_errors import (
     AIError,
     InvalidAPIKeyError,
-    NetworkError, 
+    NetworkError,
     ProviderError,
     RateLimitError,
 )
@@ -19,8 +18,15 @@ def analyze_resume(api_key, resume_text, job_description):
     """Analyze a resume against a job description."""
 
     try:
-        
-        client = genai.Client(api_key=api_key)
+        client = genai.Client(
+    api_key=api_key,
+    http_options=types.HttpOptions(
+        retry_options=types.HttpRetryOptions(
+            attempts=1,
+            http_status_codes=[],
+        )
+    ),
+)
 
         prompt = f"""
 Analyze this resume against the job description.
@@ -31,31 +37,33 @@ RESUME:
 JOB DESCRIPTION:
 {job_description}
 
-Return these sections:
+Return ONLY valid JSON.
+Do not use markdown.
+Do not add ```json or any explanation.
 
-MATCH SCORE:
-Give a percentage from 0-100.
+Use exactly this structure:
 
-MATCHING SKILLS:
-List skills found in both.
+{{
+    "match_score": 0,
+    "matching_skills": [],
+    "missing_skills": [],
+    "suggestions": [],
+    "summary": ""
+}}
 
-MISSING SKILLS:
-List important requirements missing from the resume.
-
-SUGGESTIONS:
-Give practical resume improvement suggestions.
-
-SUMMARY:
-Give a short overall analysis.
+Rules:
+- match_score must be a number from 0 to 100.
+- matching_skills must be an array of strings.
+- missing_skills must be an array of strings.
+- suggestions must be an array of strings.
+- summary must be a short string.
 """
 
         interaction = client.interactions.create(
             model=MODEL_NAME,
             input=prompt,
         )
-
-        return interaction.output_text
-    
+        return interaction.output_text.strip()
     except AuthenticationError as error:
         raise InvalidAPIKeyError(
             "The API key is invalid."
@@ -93,7 +101,3 @@ Give a short overall analysis.
         raise ProviderError(
             "🤖 The AI service returned an unexpected error."
         ) from error
-    # except Exception as error:
-    #     raise NetworkError(
-    #         "We could not connect to the AI service."
-    #     ) from error
