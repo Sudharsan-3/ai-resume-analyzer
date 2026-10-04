@@ -1,34 +1,53 @@
 import streamlit as st
 
+from ai.providers.gemini import GeminiProvider
+
+from components.input.api_settings import get_api_key
+from components.input.job_input import get_job_description
+from components.input.input_section import show_input_header
+from components.input.resume_input import get_resume
+
+from components.analysis.analysis_result import show_analysis
+
+from components.layout.header import show_header
+
+from components.usage.usage import record_analysis, show_usage
+
+from components.styles.styles import apply_styles
+
 from errors.ai_errors import AIError
 from errors.messages import get_error_message
+from services.ai_analysis import analyze_resume
 
-from ai.gemini import analyze_resume
-from components.api_settings import get_api_key
-from components.job_input import get_job_description
 from utils.pdf_reader import extract_text
-from components.usage import record_analysis, show_usage
-
+from utils.mock_data import load_sample_analysis
 
 st.set_page_config(
     page_title="AI Resume Analyzer",
     page_icon="🤖",
 )
 
-st.title("🤖 AI Resume Analyzer")
-st.write("Compare your resume with a job description using AI.")
+apply_styles()
 
+show_header()
 
-api_key = get_api_key()
+show_input_header()
+
 show_usage()
 
-resume = st.file_uploader(
-    "Upload your resume",
-    type=["pdf"],
-)
+settings_col, resume_col = st.columns(2)
+
+with settings_col:
+    api_key = get_api_key()
+
+with resume_col:
+    resume = get_resume()
 
 job_description = get_job_description()
 
+if st.button("🧪 Preview Analysis UI"):
+            result = load_sample_analysis()
+            show_analysis(result)
 
 if st.button("🚀 Analyze Resume"):
     if not api_key:
@@ -45,15 +64,17 @@ if st.button("🚀 Analyze Resume"):
         else:
             with st.spinner("🤖 AI is analyzing your resume..."):
                 try:
+                    provider = GeminiProvider(api_key)
+
                     result = analyze_resume(
-                        api_key,
+                        provider,
                         resume_text,
                         job_description,
                     )
-                    record_analysis()
 
-                    st.subheader("📊 Analysis")
-                    st.markdown(result)
+                    record_analysis()
+                    show_analysis(result)
 
                 except AIError as error:
                     st.error(get_error_message(error))
+        

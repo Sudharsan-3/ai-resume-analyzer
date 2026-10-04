@@ -1,0 +1,25 @@
+{
+    "match_score": 94,
+    "matching_skills": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React.js",
+      "Node.js",
+      "REST APIs",
+      "Git",
+      "SQL (PostgreSQL, MySQL)",
+      "NoSQL (MongoDB)",
+      "Python",
+      "Full Stack Web Development"
+    ],
+    "missing_skills": [
+      "Software Testing & Debugging Tools",
+      "Technical Documentation"
+    ],
+    "suggestions": [
+      "Explicitly mention testing frameworks or debugging practices such as Jest, Cypress, or Postman on your resume.",
+      "Add references to creating technical documentation, API specifications, or user guides."
+    ],
+    "summary": "The resume shows experience across full stack web development, including React, Node.js, databases, REST APIs, Git, and Python."
+  }
