@@ -1,6 +1,6 @@
 import streamlit as st
 
-from ai.providers.gemini import GeminiProvider
+from ai.providers.factory import get_provider
 
 from components.input.api_settings import get_api_key
 from components.input.job_input import get_job_description
@@ -64,7 +64,7 @@ if st.button("🚀 Analyze Resume"):
         else:
             with st.spinner("🤖 AI is analyzing your resume..."):
                 try:
-                    provider = GeminiProvider(api_key)
+                    provider = get_provider("gemini", api_key)
 
                     result = analyze_resume(
                         provider,
