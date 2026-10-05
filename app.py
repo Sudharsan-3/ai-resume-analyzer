@@ -2,7 +2,7 @@ import streamlit as st
 
 from ai.providers.factory import get_provider
 
-from components.input.api_settings import get_api_key
+from components.input.api_settings import get_api_settings
 from components.input.job_input import get_job_description
 from components.input.input_section import show_input_header
 from components.input.resume_input import get_resume
@@ -38,7 +38,7 @@ show_usage()
 settings_col, resume_col = st.columns(2)
 
 with settings_col:
-    api_key = get_api_key()
+    provider_name, api_key = get_api_settings()
 
 with resume_col:
     resume = get_resume()
@@ -51,7 +51,7 @@ if st.button("🧪 Preview Analysis UI"):
 
 if st.button("🚀 Analyze Resume"):
     if not api_key:
-        st.warning("Please enter your Gemini API key.")
+        st.warning("Please enter your API key.")
     elif not resume:
         st.warning("Please upload your resume.")
     elif not job_description.strip():
@@ -64,7 +64,7 @@ if st.button("🚀 Analyze Resume"):
         else:
             with st.spinner("🤖 AI is analyzing your resume..."):
                 try:
-                    provider = get_provider("gemini", api_key)
+                    provider = get_provider(provider_name, api_key)
 
                     result = analyze_resume(
                         provider,
