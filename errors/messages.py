@@ -2,6 +2,7 @@ from errors.ai_errors import (
     InvalidAPIKeyError,
     NetworkError,
     ProviderError,
+    ProviderNotAvailableError,
     RateLimitError,
 )
 
@@ -22,6 +23,10 @@ ERROR_MESSAGES = {
     NetworkError: (
         "🌐 We couldn't connect to the AI service. "
         "Please check your internet connection."
+    ),
+    ProviderNotAvailableError: (
+        "🤖 This AI provider is not available yet. "
+        "Please choose another provider."
     ),
 }
 

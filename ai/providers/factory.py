@@ -1,6 +1,7 @@
 from ai.providers.base import AIProvider
 from ai.providers.gemini import GeminiProvider
 from ai.providers.registry import SUPPORTED_PROVIDERS
+from errors.ai_errors import ProviderNotAvailableError
 
 
 def get_provider(provider_name: str, api_key: str) -> AIProvider:
@@ -14,6 +15,6 @@ def get_provider(provider_name: str, api_key: str) -> AIProvider:
             f"Unsupported AI provider: {provider_name}"
         )
 
-    raise NotImplementedError(
+    raise ProviderNotAvailableError(
         f"{SUPPORTED_PROVIDERS[provider_name]} provider is not available yet."
     )

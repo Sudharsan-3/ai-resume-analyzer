@@ -16,3 +16,6 @@ class ProviderError(AIError):
 
 class NetworkError(AIError):
     """Raised when the AI request cannot reach the provider."""
+
+class ProviderNotAvailableError(AIError):
+    """Raised when a selected AI provider is not implemented yet."""
