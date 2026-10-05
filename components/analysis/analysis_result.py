@@ -3,6 +3,7 @@ import streamlit as st
 from components.analysis.analysis_score import show_score
 from components.analysis.skill_section import show_skill_section
 from components.analysis.suggestions import show_suggestions
+from components.analysis.resume_quality import show_resume_quality
 
 
 def show_analysis(result):
@@ -68,12 +69,14 @@ def show_analysis(result):
     )
 
     st.markdown(
-    f"""
-    <div class="summary-card">
-        <div class="summary-text">
-            {result["summary"]}
+        f"""
+        <div class="summary-card">
+            <div class="summary-text">
+                {result["summary"]}
+            </div>
         </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+        """,
+        unsafe_allow_html=True,
+    )
+
+    show_resume_quality(result)

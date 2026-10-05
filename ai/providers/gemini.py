@@ -15,7 +15,6 @@ from errors.ai_errors import (
 )
 
 
-
 MODEL_NAME = "gemini-3.8-flash"
 
 
@@ -26,10 +25,11 @@ class GeminiProvider(AIProvider):
         self.client = genai.Client(
             api_key=api_key,
             http_options=types.HttpOptions(
+                timeout=30000,
                 retry_options=types.HttpRetryOptions(
                     attempts=1,
                     http_status_codes=[],
-                )
+                ),
             ),
         )
 
@@ -37,12 +37,12 @@ class GeminiProvider(AIProvider):
         """Send a prompt to Gemini and return parsed JSON."""
 
         try:
-            interaction = self.client.interactions.create(
+            response = self.client.models.generate_content(
                 model=MODEL_NAME,
-                input=prompt,
+                contents=prompt,
             )
 
-            response_text = interaction.output_text.strip()
+            response_text = response.text.strip()
 
             try:
                 return json.loads(response_text)
@@ -65,7 +65,7 @@ class GeminiProvider(AIProvider):
                     "The API key is invalid or does not have access."
                 ) from error
 
-            if status == 429:
+            if status in (429, 503):
                 raise RateLimitError(
                     "The AI service is currently busy or rate limited."
                 ) from error
@@ -77,4 +77,9 @@ class GeminiProvider(AIProvider):
         except InternalServerError as error:
             raise ProviderError(
                 "The AI provider is temporarily unavailable."
+            ) from error
+
+        except Exception as error:
+            raise ProviderError(
+                "The AI provider encountered an unexpected error."
             ) from error
