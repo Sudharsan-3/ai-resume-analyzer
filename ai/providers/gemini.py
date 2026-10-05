@@ -8,6 +8,7 @@ from google.genai._gaos.lib.compat_errors import (
 )
 
 from ai.providers.base import AIProvider
+from ai.response_schema import RESPONSE_SCHEMA
 from errors.ai_errors import (
     InvalidAPIKeyError,
     ProviderError,
@@ -38,9 +39,13 @@ class GeminiProvider(AIProvider):
 
         try:
             response = self.client.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt,
-            )
+                    model=MODEL_NAME,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json",
+                        response_schema=RESPONSE_SCHEMA,
+                    ),
+)
 
             response_text = response.text.strip()
 
