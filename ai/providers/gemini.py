@@ -39,52 +39,59 @@ class GeminiProvider(AIProvider):
 
         try:
             response = self.client.models.generate_content(
-                    model=MODEL_NAME,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json",
-                        response_schema=RESPONSE_SCHEMA,
-                    ),
-)
+                model=MODEL_NAME,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=RESPONSE_SCHEMA,
+                ),
+            )
 
             response_text = response.text.strip()
 
             try:
                 return json.loads(response_text)
 
-            except json.JSONDecodeError as error:
+            except json.JSONDecodeError:
                 raise ProviderError(
                     "🤖 The AI returned an invalid response."
-                ) from error
+                )
 
-        except AuthenticationError as error:
+        except AuthenticationError:
             raise InvalidAPIKeyError(
                 "The API key is invalid."
-            ) from error
+            )
 
-        except errors.ClientError as error:
-            status = getattr(error, "status_code", None)
+        except errors.ClientError as exc:
+            status = getattr(exc, "status_code", None)
 
             if status in (400, 401, 403):
                 raise InvalidAPIKeyError(
                     "The API key is invalid or does not have access."
-                ) from error
+                )
 
             if status in (429, 503):
                 raise RateLimitError(
                     "The AI service is currently busy or rate limited."
-                ) from error
+                )
 
             raise ProviderError(
                 "The AI provider could not process your request."
-            ) from error
+            )
 
-        except InternalServerError as error:
+        except InternalServerError:
             raise ProviderError(
                 "The AI provider is temporarily unavailable."
-            ) from error
+            )
 
-        except Exception as error:
+        except Exception as exc:
+            status = getattr(exc, "status_code", None)
+
+            if status in (429, 503):
+                raise RateLimitError(
+                    "The AI service is currently busy or rate limited."
+                )
+
             raise ProviderError(
                 "The AI provider encountered an unexpected error."
-            ) from error
+            )

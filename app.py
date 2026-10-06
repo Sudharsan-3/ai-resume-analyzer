@@ -20,7 +20,7 @@ from errors.messages import get_error_message
 from services.ai_analysis import analyze_resume
 
 from utils.pdf_reader import extract_text
-from utils.mock_data import load_sample_analysis
+
 
 st.set_page_config(
     page_title="AI Resume Analyzer",
@@ -45,9 +45,6 @@ with resume_col:
 
 job_description = get_job_description()
 
-if st.button("🧪 Preview Analysis UI"):
-            result = load_sample_analysis()
-            show_analysis(result)
 
 if st.button("🚀 Analyze Resume"):
     if not api_key:
