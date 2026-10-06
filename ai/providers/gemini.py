@@ -84,14 +84,7 @@ class GeminiProvider(AIProvider):
                 "The AI provider is temporarily unavailable."
             )
 
-        except Exception as exc:
-            status = getattr(exc, "status_code", None)
-
-            if status in (429, 503):
-                raise RateLimitError(
-                    "The AI service is currently busy or rate limited."
-                )
-
+        except Exception:
             raise ProviderError(
                 "The AI provider encountered an unexpected error."
             )
