@@ -1,21 +1,17 @@
+
 import streamlit as st
 
 
 def get_job_description():
-    """Display job description input and return its content."""
-    st.markdown("### 📋 Job Description")
-
-    st.caption(
-        "Paste the job description you want to compare your resume against."
-    )
+    """Collect the target job description."""
 
     return st.text_area(
-        "Paste the job description here",
-        height=250,
+        "Paste the job description",
         placeholder=(
-            "Example:\n"
-            "We are looking for a React developer "
-            "with experience in Node.js..."
+            "Paste the job description here...\n\n"
+            "Include responsibilities, required skills, "
+            "qualifications, and experience."
         ),
-        label_visibility="collapsed",
+        height=220,
+        key="job_description",
     )

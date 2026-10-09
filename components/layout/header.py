@@ -8,7 +8,7 @@ def show_header(show_back=False):
     st.html(
         """
         <div class="app-header">
-            <a href="?home=1" class="header-brand ">
+            <a href="?screen=welcome" class="header-brand">
                 AI Resume Analyzer
             </a>
 

@@ -1,28 +1,23 @@
-import streamlit as st
 
-from ai.providers.registry import SUPPORTED_PROVIDERS
+import streamlit as st
 
 
 def get_api_settings():
-    """Get the selected AI provider and its API key."""
-
-    st.markdown("### 🔑 AI Settings")
+    """Display AI provider settings."""
 
     provider_name = st.selectbox(
-        "AI Provider",
-        options=list(SUPPORTED_PROVIDERS.keys()),
-        format_func=lambda name: SUPPORTED_PROVIDERS[name],
-    )
-
-    st.caption(
-        "Enter your API key to run the analysis."
+        "AI Model",
+        ["gemini"],
+        format_func=lambda value: "Google Gemini",
+        key="ai_provider",
     )
 
     api_key = st.text_input(
-        f"{SUPPORTED_PROVIDERS[provider_name]} API Key",
+        "Gemini API Key",
         type="password",
-        placeholder="Enter your API key",
-        help="Your key is used only for this session.",
+        placeholder="Paste your Gemini API key",
+        key="gemini_api_key",
+        help="Your API key is used to request your resume analysis.",
     )
 
     return provider_name, api_key
